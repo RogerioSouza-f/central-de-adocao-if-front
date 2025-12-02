@@ -30,7 +30,7 @@ const initialAnimals = [
         gender: "Fêmea",
         description: "Bella é uma cadelinha muito inteligente e leal.",
         available: false,
-        photos: ["https://cptstatic.s3.amazonaws.com/imagens/enviadas/materias/materia10349/racas-de-cachorro-golden-retriever-cpt11.jpg"]
+        photos: ["https://virapet.ong.br/wp-content/uploads/2025/05/o-que-e-um-cachorro-vira-lata-1024x585.webp"]
     }
 ];
 
