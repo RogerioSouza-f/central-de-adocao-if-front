@@ -17,7 +17,6 @@ const Toast = ({ toast }) => {
 };
 
 /*MODAL DE DETALHES */
-
 const AnimalDetailModal = ({ animal, onClose }) => {
     if (!animal) return null;
 
