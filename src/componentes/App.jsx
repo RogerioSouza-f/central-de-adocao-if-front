@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import Navigation from './navegacao';
-import HomeSection from './Home';
+import Navigation from './App/navegacao';
+import HomeSection from './App/Home';
 import AnimalsSection from '../Data/listaAnimais';
-import RegisterSection from './CadastroAdotante';
-import AdoptionModal from "./AdoptionModal";
-import initialAnimals from './DadosIniciais'
-import Toast from './AdoptionModal'
+import RegisterSection from './App/CadastroAdotante';
+import AdoptionModal from "./App/AdoptionModal";
+import initialAnimals from './App/DadosIniciais'
+import Toast from './App/AdoptionModal'
 
 
 const App = () => {
