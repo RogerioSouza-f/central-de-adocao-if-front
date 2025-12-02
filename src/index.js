@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import AppAdm from "./componentes/AppAdm";
-import "./style/globalAdmin.css";
+import App from "./componentes/App";
+import "./style/global.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<AppAdm/>);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+

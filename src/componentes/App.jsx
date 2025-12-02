@@ -5,7 +5,7 @@ import AnimalsSection from '../Data/listaAnimais';
 import RegisterSection from './App/CadastroAdotante';
 import AdoptionModal from "./App/AdoptionModal";
 import initialAnimals from './App/DadosIniciais'
-import Toast from './App/AdoptionModal'
+import {Toast} from './App/AdoptionModal'
 
 
 const App = () => {
