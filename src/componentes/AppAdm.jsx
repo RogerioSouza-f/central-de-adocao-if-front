@@ -3,7 +3,6 @@ import AdminPanel from '../pages/PainelAdm';
 import AdminLogin from '../pages/AdmLogin';
 import {Toast} from './admin/AdoptionModalAdm'
 
-
 const AppAdm = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [toast, setToast] = useState({ show: false, icon: '', title: '', message: '' });
