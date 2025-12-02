@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Navigation from './navegacao';
 import HomeSection from './Home';
-import AnimalsSection from './listaAnimais';
+import AnimalsSection from '../Data/listaAnimais';
 import RegisterSection from './CadastroAdotante';
 import AdoptionModal from "./AdoptionModal";
 import initialAnimals from './DadosIniciais'
