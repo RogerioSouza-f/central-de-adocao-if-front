@@ -31,23 +31,25 @@ html {
 .login-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 70% 80%, rgba(238, 90, 36, 0.3) 0%, transparent 50%);
+    background: radial-gradient(circle at 30% 20%, rgba(138, 43, 226, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(0, 153, 255, 0.25) 0%, transparent 50%);
 }
 
+/* --- CARD --- */
 .login-card {
     position: relative;
     z-index: 2;
     width: 100%;
     max-width: 450px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(30, 30, 40, 0.6);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(120, 120, 255, 0.15);
     border-radius: 2rem;
     padding: 3rem;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
 }
 
+/* --- HEADER --- */
 .login-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -58,7 +60,7 @@ html {
     height: 80px;
     margin: 0 auto 1.5rem;
     border-radius: 1.5rem;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    background: linear-gradient(135deg, #8a2be2, #0099ff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,7 +70,7 @@ html {
 .login-title {
     font-size: 2rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    background: linear-gradient(135deg, #8a2be2, #0099ff);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -76,10 +78,11 @@ html {
 }
 
 .login-subtitle {
-    color: #888;
+    color: #aaa;
     font-size: 0.95rem;
 }
 
+/* --- FORM --- */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -87,7 +90,7 @@ html {
 .form-label {
     display: block;
     font-weight: 700;
-    color: white;
+    color: #e3e3e3;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -98,7 +101,7 @@ html {
     width: 100%;
     padding: 1rem 1.5rem;
     border-radius: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(150, 150, 255, 0.25);
     background: rgba(255, 255, 255, 0.05);
     color: white;
     font-size: 1rem;
@@ -107,20 +110,21 @@ html {
 }
 
 .form-input:focus {
-    border-color: #ff6b6b;
-    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
-    background: rgba(255, 255, 255, 0.1);
+    border-color: #8a2be2;
+    box-shadow: 0 0 8px rgba(138, 43, 226, 0.4);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .form-input::placeholder {
-    color: #666;
+    color: #777;
 }
 
+/* BOTÃO*/
 .submit-btn {
     width: 100%;
     padding: 1.25rem;
     border-radius: 2rem;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    background: linear-gradient(135deg, #8a2be2, #0099ff);
     color: white;
     border: none;
     font-weight: 700;
@@ -130,18 +134,19 @@ html {
 }
 
 .submit-btn:hover {
-    background: linear-gradient(135deg, #ee5a24, #d84315);
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
+    background: linear-gradient(135deg, #7420d9, #0080dd);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
 }
 
+/*ERRO*/
 .error-message {
     margin-top: 1rem;
     padding: 1rem;
     border-radius: 1rem;
-    background: rgba(239, 68, 68, 0.2);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
+    background: rgba(200, 0, 0, 0.2);
+    border: 1px solid rgba(255, 80, 80, 0.3);
+    color: #ff6b6b;
     text-align: center;
     font-weight: 600;
     font-size: 0.9rem;

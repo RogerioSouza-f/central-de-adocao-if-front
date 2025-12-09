@@ -1,18 +1,19 @@
-import {useState} from 'react';
+import { useState } from 'react';
 
 const RegisterSection = ({ onRegister, showToast }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
-        bond: ''
+        bond: '',
+        password: '' // ✅ Campo de senha adicionado
     });
 
     // Handler de submit
     const handleSubmit = (e) => {
         e.preventDefault();
         onRegister(formData);
-        setFormData({ name: '', email: '', phone: '', bond: '' });
+        setFormData({ name: '', email: '', phone: '', bond: '', password: '' });
         showToast('✅', 'Cadastro Realizado!', 'Agora você pode adotar um pet incrível!');
     };
 
@@ -98,6 +99,21 @@ const RegisterSection = ({ onRegister, showToast }) => {
                                     <option value="Visitante"> Visitante </option>
                                 </select>
                             </div>
+
+                            {/* ✅ Campo Senha */}
+                            <div className="form-group">
+                                <label htmlFor="password" className="form-label">Senha</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    className="form-input"
+                                    placeholder="Sua senha"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
 
                         {/* Botão Submit */}
@@ -110,4 +126,5 @@ const RegisterSection = ({ onRegister, showToast }) => {
         </section>
     );
 };
+
 export default RegisterSection;

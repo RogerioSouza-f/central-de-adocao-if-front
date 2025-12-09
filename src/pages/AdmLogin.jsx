@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import "../style/globalAdmin.css";
+
 
 const AdminLogin = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({
@@ -32,8 +34,7 @@ const AdminLogin = ({ onLogin }) => {
             <div className="login-card">
                 <div className="login-header">
                     <div className="login-logo">🔐</div>
-                    <h2 className="login-title">Painel Admin</h2>
-                    <p className="login-subtitle">Acesso restrito a administradores</p>
+                    <h2 className="login-title">Seja Bem-vindo</h2>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -66,7 +67,7 @@ const AdminLogin = ({ onLogin }) => {
                     </div>
 
                     <button type="submit" className="submit-btn">
-                        Entrar no Sistema 🚀
+                        Login
                     </button>
 
                     {error && <div className="error-message">❌ {error}</div>}

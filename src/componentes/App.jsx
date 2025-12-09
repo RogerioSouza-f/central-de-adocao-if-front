@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+
 import Navigation from './App/navegacao';
 import HomeSection from './App/Home';
 import AnimalsSection from '../Data/listaAnimais';
 import RegisterSection from './App/CadastroAdotante';
-import AdoptionModal from "./App/AdoptionModal";
-import initialAnimals from './App/DadosIniciais'
-import {Toast} from './App/AdoptionModal'
 
+import initialAnimals from './App/DadosIniciais'
+import {AdoptionModal, Toast} from './App/AdoptionModal'
+import AdminLogin from "../pages/AdmLogin";
+import AdminPanel from "../pages/PainelAdm";
 
 const App = () => {
-    // Estados
     const [currentSection, setCurrentSection] = useState('home');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [animals, setAnimals] = useState(initialAnimals);
@@ -18,7 +19,12 @@ const App = () => {
     const [adoptionModal, setAdoptionModal] = useState({ isOpen: false, animalId: null });
     const [toast, setToast] = useState({ show: false, icon: '', title: '', message: '' });
 
-    // Função: Mostrar Toast
+    useEffect(() => {
+        if (currentSection === "admin-panel") {
+            import("../style/globalAdmin.css");
+        }
+    }, [currentSection]);
+
     const showToast = (icon, title, message) => {
         setToast({ show: true, icon, title, message });
         setTimeout(() => {
@@ -26,54 +32,43 @@ const App = () => {
         }, 4000);
     };
 
-    // Função: Registrar Usuário
     const handleRegister = (userData) => {
-        const newUser = {
-            id: users.length + 1,
-            ...userData
-        };
+        const newUser = { id: users.length + 1, ...userData };
         setUsers([...users, newUser]);
     };
 
-    // Função: Iniciar Adoção
     const handleAdopt = (animalId) => {
         setAdoptionModal({ isOpen: true, animalId });
     };
 
-    // Função: Confirmar Adoção
     const confirmAdoption = () => {
         if (adoptionModal.animalId && users.length > 0) {
             const animal = animals.find(a => a.id === adoptionModal.animalId);
             const user = users[users.length - 1];
 
-            // Atualizar disponibilidade do animal
             setAnimals(animals.map(a =>
                 a.id === adoptionModal.animalId ? { ...a, available: false } : a
             ));
 
-            // Adicionar registro de adoção
             const newAdoption = {
                 id: adoptions.length + 1,
                 animalId: adoptionModal.animalId,
                 userId: user.id,
                 date: new Date().toLocaleDateString('pt-BR')
             };
-            setAdoptions([...adoptions, newAdoption]);
 
+            setAdoptions([...adoptions, newAdoption]);
             showToast('🎉', 'Parabéns!', `${animal.name} foi adotado com sucesso!`);
             setAdoptionModal({ isOpen: false, animalId: null });
         }
     };
 
-    // Função: Fechar Modal
     const closeAdoptionModal = () => {
         setAdoptionModal({ isOpen: false, animalId: null });
     };
 
-    // Renderização
     return (
         <div>
-            {/* Navegação */}
             <Navigation
                 currentSection={currentSection}
                 setCurrentSection={setCurrentSection}
@@ -81,44 +76,42 @@ const App = () => {
                 setMobileMenuOpen={setMobileMenuOpen}
             />
 
-            {/* Conteúdo Principal */}
             <main className="main-content">
                 {currentSection === 'home' && (
-                    <HomeSection
-                        animals={animals}
-                        users={users}
-                        adoptions={adoptions}
-                        setCurrentSection={setCurrentSection}
-                    />
+                    <HomeSection animals={animals} users={users} adoptions={adoptions} setCurrentSection={setCurrentSection}/>
                 )}
 
                 {currentSection === 'animals' && (
-                    <AnimalsSection
-                        animals={animals}
-                        users={users}
-                        onAdopt={handleAdopt}
-                        showToast={showToast}
-                    />
+                    <AnimalsSection animals={animals} users={users} onAdopt={handleAdopt} showToast={showToast}/>
                 )}
 
                 {currentSection === 'register' && (
-                    <RegisterSection
-                        onRegister={handleRegister}
-                        showToast={showToast}
+                    <RegisterSection onRegister={handleRegister} showToast={showToast}/>
+                )}
+
+                {currentSection === 'login' && (
+                    <AdminLogin
+                        onLogin={() => {
+                            showToast("🔐", "Login bem-sucedido!", "Bem-vindo ao painel administrativo.");
+                            setCurrentSection('admin-panel');
+                        }}
                     />
+                )}
+
+                {currentSection === 'admin-panel' && (
+                    <AdminPanel onLogout={() => setCurrentSection('home')} showToast={showToast}/>
                 )}
             </main>
 
-            {/* Modal de Adoção */}
             <AdoptionModal
                 isOpen={adoptionModal.isOpen}
                 onClose={closeAdoptionModal}
                 onConfirm={confirmAdoption}
             />
 
-            {/* Notificações Toast */}
             <Toast toast={toast} />
         </div>
     );
 };
+
 export default App;

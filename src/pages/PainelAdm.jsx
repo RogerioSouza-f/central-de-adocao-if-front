@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import initialAnimals from "../componentes/admin/DadosIniciaisAdm";
 import {initialAdoptions} from "../componentes/admin/DadosIniciaisAdm";
 import AnimalDetailModal from "../componentes/admin/AdoptionModalAdm";
+import "../style/globalAdmin.css";
 
 const AdminPanel = ({ onLogout, showToast }) => {
     const [activeTab, setActiveTab] = useState('animals');

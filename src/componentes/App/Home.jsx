@@ -1,9 +1,37 @@
+import { useState } from 'react';
+
 const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
+    const [menuOpen, setMenuOpen] = useState(false);
+
     const availableAnimals = animals.filter(a => a.available).length;
 
     return (
         <div>
-            {/* Hero Section - Banner Principal */}
+
+            {/* Botão hambúrguer no canto superior direito */}
+            <button
+                className="hamburger-btn right-menu"
+                onClick={() => setMenuOpen(!menuOpen)}
+            >
+                ☰
+            </button>
+
+            {/* Menu lateral */}
+            {menuOpen && (
+                <div className="side-menu right-side">
+                    <button
+                        className="side-menu-item"
+                        onClick={() => {
+                            setCurrentSection('login');
+                            setMenuOpen(false);
+                        }}
+                    >
+                        Login
+                    </button>
+                </div>
+            )}
+
+            {/* Hero Section */}
             <section className="hero-section">
                 <div className="hero-bg"></div>
                 <div className="hero-content">
@@ -14,13 +42,16 @@ const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
                     <p className="hero-subtitle">
                         A plataforma mais moderna para conectar pets abandonados com famílias amorosas da comunidade IFPB. Tecnologia e amor trabalhando juntos.
                     </p>
+
                     <div className="hero-cta">
+
                         <button
                             className="cta-btn cta-primary"
                             onClick={() => setCurrentSection('animals')}
                         >
                             Encontrar Pet ✨
                         </button>
+
                         <button
                             className="cta-btn cta-secondary"
                             onClick={() => setCurrentSection('register')}
@@ -31,7 +62,7 @@ const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
                 </div>
             </section>
 
-            {/* Stats Section - Estatísticas */}
+            {/* Stats Section */}
             <section className="stats-section">
                 <div className="stats-grid">
                     <div className="stat-card glass">
@@ -41,6 +72,7 @@ const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
                             <p className="stat-label">Pets Cadastrados</p>
                         </div>
                     </div>
+
                     <div className="stat-card glass">
                         <div className="stat-content">
                             <div className="stat-emoji">❤️</div>
@@ -48,6 +80,7 @@ const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
                             <p className="stat-label">Adoções Realizadas</p>
                         </div>
                     </div>
+
                     <div className="stat-card glass">
                         <div className="stat-content">
                             <div className="stat-emoji">🏠</div>
@@ -60,4 +93,5 @@ const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
         </div>
     );
 };
+
 export default HomeSection;

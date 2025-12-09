@@ -1,4 +1,6 @@
 
+import {useState} from "react";
+
 /* DADOS INICIAIS */
 
 const initialAnimals = [
@@ -9,8 +11,9 @@ const initialAnimals = [
         breed: "Golden Retriever",
         age: "2 anos",
         gender: "Fêmea",
-        description: "Luna é uma cadela muito carinhosa e energética. Adora brincar com crianças e outros pets. Está castrada e com todas as vacinas em dia.",
-        available: true
+        description: "Luna é uma cadela muito carinhosa e energética.",
+        available: true,
+        photos: ["https://love.doghero.com.br/wp-content/uploads/2018/12/golden-retriever-1.png"]
     },
     {
         id: 2,
@@ -19,8 +22,9 @@ const initialAnimals = [
         breed: "Persa",
         age: "1 ano",
         gender: "Macho",
-        description: "Milo é um gatinho muito dócil e carinhoso. Gosta de colo e é perfeito para apartamentos. Muito limpo e educado.",
-        available: true
+        description: "Milo é um gatinho muito dócil e carinhoso.",
+        available: true,
+        photos: ["https://petitgato.com.br/img/webp/gatos-persas-em-sao-paulo-img-3779.webp"]
     },
     {
         id: 3,
@@ -29,18 +33,9 @@ const initialAnimals = [
         breed: "Vira-lata",
         age: "4 anos",
         gender: "Fêmea",
-        description: "Bella é uma cadelinha muito inteligente e leal. Ideal para famílias que buscam um companheiro fiel e protetor.",
-        available: true
-    },
-    {
-        id: 4,
-        name: "Thor",
-        species: "Cachorro",
-        breed: "Pastor Alemão",
-        age: "3 anos",
-        gender: "Macho",
-        description: "Thor é um cachorro muito obediente e protetor. Ótimo para casas com quintal. Muito bem treinado e sociável.",
-        available: true
+        description: "Bella é uma cadelinha muito inteligente e leal.",
+        available: true,
+        photos: ["https://virapet.ong.br/wp-content/uploads/2025/05/o-que-e-um-cachorro-vira-lata-1024x585.webp"]
     }
 ];
 
