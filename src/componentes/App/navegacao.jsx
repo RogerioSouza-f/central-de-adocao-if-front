@@ -33,6 +33,12 @@ const Navigation = ({ currentSection, setCurrentSection, mobileMenuOpen, setMobi
                     >
                         Cadastro
                     </button>
+                    <button
+                        className={`nav-btn ${currentSection === 'login' ? 'active' : 'inactive'}`}
+                        onClick={() => setCurrentSection('login')}
+                    >
+                        Login
+                    </button>
                 </div>
 
                 {/* Botão Menu Mobile */}
@@ -66,6 +72,12 @@ const Navigation = ({ currentSection, setCurrentSection, mobileMenuOpen, setMobi
                         onClick={() => { setCurrentSection('register'); setMobileMenuOpen(false); }}
                     >
                         📝 Cadastro
+                    </button>
+                    <button
+                        className="mobile-menu-item"
+                        onClick={() => { setCurrentSection('login'); setMobileMenuOpen(false); }}
+                    >
+                        🔑 Login
                     </button>
                 </div>
             )}
