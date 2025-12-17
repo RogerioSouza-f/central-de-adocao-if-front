@@ -8,15 +8,7 @@ const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
     return (
         <div>
 
-            {/* Botão hambúrguer no canto superior direito */}
-            <button
-                className="hamburger-btn right-menu"
-                onClick={() => setMenuOpen(!menuOpen)}
-            >
-                ☰
-            </button>
 
-            {/* Menu lateral */}
             {menuOpen && (
                 <div className="side-menu right-side">
                     <button

@@ -1,21 +1,40 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import "../style/globalAdmin.css";
-
 
 const AdminLogin = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({
-        username: '',
-        password: ''
+        email: '',
+        senha: ''
     });
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
 
-        if (credentials.username === 'admin' && credentials.password === 'admin123') {
+        try {
+            const res = await fetch("http://localhost:8080/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(credentials)
+            });
+
+            if (!res.ok) {
+                throw new Error("Login inválido");
+            }
+
+            const data = await res.json();
+
+            // sessão simples
+            sessionStorage.setItem("adminLogged", "true");
+            sessionStorage.setItem("adminEmail", data.email);
+
             onLogin();
-        } else {
-            setError('Usuário ou senha incorretos!');
+
+        } catch (err) {
+            setError("Email ou senha incorretos!");
             setTimeout(() => setError(''), 3000);
         }
     };
@@ -39,28 +58,26 @@ const AdminLogin = ({ onLogin }) => {
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="username" className="form-label">Usuário</label>
+                        <label className="form-label">Email</label>
                         <input
-                            type="text"
-                            id="username"
-                            name="username"
+                            type="email"
+                            name="email"
                             className="form-input"
-                            placeholder="Digite seu usuário"
-                            value={credentials.username}
+                            placeholder="Digite seu email"
+                            value={credentials.email}
                             onChange={handleChange}
                             required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="password" className="form-label">Senha</label>
+                        <label className="form-label">Senha</label>
                         <input
                             type="password"
-                            id="password"
-                            name="password"
+                            name="senha"
                             className="form-input"
                             placeholder="Digite sua senha"
-                            value={credentials.password}
+                            value={credentials.senha}
                             onChange={handleChange}
                             required
                         />
@@ -76,4 +93,5 @@ const AdminLogin = ({ onLogin }) => {
         </div>
     );
 };
+
 export default AdminLogin;

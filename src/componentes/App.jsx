@@ -6,8 +6,8 @@ import AnimalsSection from '../Data/listaAnimais';
 import RegisterSection from './App/CadastroAdotante';
 
 import initialAnimals from './App/DadosIniciais'
-import {AdoptionModal, Toast} from './App/AdoptionModal'
-import AdminLogin from "../pages/AdmLogin";
+import { AdoptionModal, Toast } from './App/AdoptionModal'
+import AdminLogin from "../pages/Login";
 import AdminPanel from "../pages/PainelAdm";
 
 const App = () => {
@@ -18,6 +18,11 @@ const App = () => {
     const [adoptions, setAdoptions] = useState([]);
     const [adoptionModal, setAdoptionModal] = useState({ isOpen: false, animalId: null });
     const [toast, setToast] = useState({ show: false, icon: '', title: '', message: '' });
+
+    // 🔐 CONTROLE DE LOGIN DO ADMIN
+    const [adminLogged, setAdminLogged] = useState(
+        sessionStorage.getItem("adminLogged") === "true"
+    );
 
     useEffect(() => {
         if (currentSection === "admin-panel") {
@@ -78,28 +83,57 @@ const App = () => {
 
             <main className="main-content">
                 {currentSection === 'home' && (
-                    <HomeSection animals={animals} users={users} adoptions={adoptions} setCurrentSection={setCurrentSection}/>
+                    <HomeSection
+                        animals={animals}
+                        users={users}
+                        adoptions={adoptions}
+                        setCurrentSection={setCurrentSection}
+                    />
                 )}
 
                 {currentSection === 'animals' && (
-                    <AnimalsSection animals={animals} users={users} onAdopt={handleAdopt} showToast={showToast}/>
+                    <AnimalsSection
+                        animals={animals}
+                        users={users}
+                        onAdopt={handleAdopt}
+                        showToast={showToast}
+                    />
                 )}
 
                 {currentSection === 'register' && (
-                    <RegisterSection onRegister={handleRegister} showToast={showToast}/>
+                    <RegisterSection
+                        onRegister={handleRegister}
+                        showToast={showToast}
+                        setCurrentSection = {setCurrentSection}
+                    />
                 )}
 
+                {/*LOGIN ADMIN */}
                 {currentSection === 'login' && (
                     <AdminLogin
                         onLogin={() => {
+                            setAdminLogged(true);
                             showToast("🔐", "Login bem-sucedido!", "Bem-vindo ao painel administrativo.");
                             setCurrentSection('admin-panel');
                         }}
                     />
                 )}
 
-                {currentSection === 'admin-panel' && (
-                    <AdminPanel onLogout={() => setCurrentSection('home')} showToast={showToast}/>
+                {/* 🛡 PAINEL ADMIN PROTEGIDO */}
+                {currentSection === 'admin-panel' && adminLogged && (
+                    <AdminPanel
+                        onLogout={() => {
+                            sessionStorage.clear();
+                            setAdminLogged(false);
+                            setCurrentSection('home');
+                        }}
+                        showToast={showToast}
+                    />
+                )}
+
+                {/*  BLOQUEIO SE TENTAR ENTRAR SEM LOGIN */}
+                {currentSection === 'admin-panel' && !adminLogged && (
+                    setCurrentSection('login')
                 )}
             </main>
 

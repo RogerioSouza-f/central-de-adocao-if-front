@@ -35,7 +35,6 @@ const AnimalDetailModal = ({ animal, onClose }) => {
 
                 <div className="modal-body">
 
-                    {/* ✔✔✔ GALERIA DE FOTOS — CORRIGIDA ✔✔✔ */}
                     {animal.photos && Array.isArray(animal.photos) && animal.photos.length > 0 && (
                         <div className="detail-section">
                             <h3 className="detail-section-title">📸 Galeria de Fotos</h3>
@@ -64,7 +63,6 @@ const AnimalDetailModal = ({ animal, onClose }) => {
                             </div>
                         </div>
                     )}
-                    {/* ✔✔✔ FIM DA GALERIA CORRIGIDA ✔✔✔ */}
 
                     <div className="detail-section">
                         <h3 className="detail-section-title">ℹ️ Informações</h3>

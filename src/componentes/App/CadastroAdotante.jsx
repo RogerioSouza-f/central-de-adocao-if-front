@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-const RegisterSection = ({ onRegister, showToast }) => {
+const RegisterSection = ({ onRegister, showToast, setCurrentSection }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
         bond: '',
-        password: '' // ✅ Campo de senha adicionado
+        password: ''
     });
 
     // Handler de submit
@@ -15,6 +15,7 @@ const RegisterSection = ({ onRegister, showToast }) => {
         onRegister(formData);
         setFormData({ name: '', email: '', phone: '', bond: '', password: '' });
         showToast('✅', 'Cadastro Realizado!', 'Agora você pode adotar um pet incrível!');
+        setCurrentSection('home');
     };
 
     // Handler de mudança de campo
@@ -100,7 +101,7 @@ const RegisterSection = ({ onRegister, showToast }) => {
                                 </select>
                             </div>
 
-                            {/* ✅ Campo Senha */}
+                            {/* Campo Senha */}
                             <div className="form-group">
                                 <label htmlFor="password" className="form-label">Senha</label>
                                 <input

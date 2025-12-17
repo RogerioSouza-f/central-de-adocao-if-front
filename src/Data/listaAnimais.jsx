@@ -6,14 +6,14 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
     const [genderFilter, setGenderFilter] = useState('');
     const [selectedAnimal, setSelectedAnimal] = useState(null);
 
-    // Filtros iguais ao ADM
+    // Filtros
     const filteredAnimals = animals.filter(animal =>
         animal.available &&
         (speciesFilter === '' || animal.species === speciesFilter) &&
         (genderFilter === '' || animal.gender === genderFilter)
     );
 
-    // Lógica de adoção igual ao ADM
+    // Lógica de adoção
     const handleAdopt = (animalId) => {
         if (users.length === 0) {
             showToast('⚠️', 'Cadastro Necessário', 'Você precisa se cadastrar primeiro para adotar um pet!');
@@ -31,7 +31,7 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                     <p className="section-subtitle">Encontre seu novo companheiro</p>
                 </div>
 
-                {/* FILTROS COM A MESMA LÓGICA DO ADM */}
+                {/* FILTROS */}
                 <div className="filters">
                     <select
                         className="filter-select"
@@ -55,7 +55,7 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                 </div>
             </div>
 
-            {/* GRID IGUAL DO ADM */}
+            {/* GRID */}
             <div className="animals-grid">
                 {filteredAnimals.map(animal => (
                     <div key={animal.id} className="animal-card glass">
@@ -100,7 +100,7 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                         <div className="animal-content">
                             <div className="animal-header">
 
-                                {/* NOME ABRE MODAL — IGUAL AO ADM */}
+                                {/*MODAL*/}
                                 <h3
                                     className="animal-name clickable"
                                     onClick={() => setSelectedAnimal(animal)}
@@ -123,7 +123,7 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                             {/* Descrição */}
                             <p className="animal-description">{animal.description}</p>
 
-                            {/* BOTÃO DE ADOÇÃO COM LÓGICA DO ADM */}
+                            {/* BOTÃO DE ADOÇÃO*/}
                             <button
                                 className="adopt-btn"
                                 onClick={() => handleAdopt(animal.id)}
@@ -144,7 +144,7 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                 </div>
             )}
 
-            {/* Modal igual ADM */}
+            {/* Modal  */}
             <AdoptionModal
                 animal={selectedAnimal}
                 onClose={() => setSelectedAnimal(null)}
