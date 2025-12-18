@@ -9,6 +9,8 @@ import initialAnimals from './App/DadosIniciais';
 import { AdoptionModal, Toast } from './App/AdoptionModal';
 import Login from "../pages/Login";
 import AdminPanel from "../pages/PainelAdm";
+import UserProfile from "../pages/UserProfile";
+
 
 const App = () => {
 
@@ -138,6 +140,11 @@ const App = () => {
                 {currentSection === 'admin-panel' && userTipo !== "ADMIN" && (
                     setCurrentSection('login')
                 )}
+
+                {sessionStorage.getItem("userTipo") && (
+                    <UserProfile onLogout={handleLogout} />
+                )}
+
 
             </main>
 

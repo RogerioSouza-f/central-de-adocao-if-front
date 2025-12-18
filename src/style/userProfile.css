@@ -1,0 +1,80 @@
+.user-profile {
+    position: fixed;
+    top: 2.5rem;
+    right: 1.5rem;
+    z-index: 999;
+}
+
+/* AVATAR */
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8a2be2, #0099ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+}
+
+/* TOOLTIP */
+.user-tooltip {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    min-width: 200px;
+    background: rgba(30, 30, 40, 0.9);
+    backdrop-filter: blur(14px);
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-5px);
+    transition: all 0.25s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* HOVER */
+.user-avatar:hover .user-tooltip {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* TEXTOS */
+.tooltip-email {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    word-break: break-all;
+}
+
+.tooltip-role {
+    font-size: 0.7rem;
+    opacity: 0.85;
+}
+
+.tooltip-role.admin {
+    color: #ffb703;
+}
+
+.tooltip-role.usuario {
+    color: #4cc9f0;
+}
+
+/* LOGOUT */
+.tooltip-logout {
+    margin-top: 0.5rem;
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+}

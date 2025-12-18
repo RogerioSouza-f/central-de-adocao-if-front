@@ -1,15 +1,17 @@
-import React, {useState} from 'react';
-import initialAnimals from "../componentes/admin/DadosIniciaisAdm";
-import {initialAdoptions} from "../componentes/admin/DadosIniciaisAdm";
+import React, {useEffect, useState} from 'react';
 import AnimalDetailModal from "../componentes/admin/AdoptionModalAdm";
 import "../style/globalAdmin.css";
 
+const API_URL = "http://localhost:8080/animais";
+const IMG_URL = "http://localhost:8080";
+
 const AdminPanel = ({ onLogout, showToast }) => {
     const [activeTab, setActiveTab] = useState('animals');
-    const [animals, setAnimals] = useState(initialAnimals);
-    const [adoptions, setAdoptions] = useState(initialAdoptions);
+    const [animals, setAnimals] = useState([]);
+    const [adoptions, setAdoptions] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [selectedAnimal, setSelectedAnimal] = useState(null);
+
 
     const [animalForm, setAnimalForm] = useState({
         name: '',
@@ -23,6 +25,32 @@ const AdminPanel = ({ onLogout, showToast }) => {
 
     // Manipular fotos
 
+    const fetchAnimals = async () => {
+        const res = await fetch(`${API_URL}/listar`);
+        const data = await res.json();
+
+        const formatted = data.map(a => ({
+            id: a.id,
+            name: a.nome,
+            species: a.especie,
+            breed: a.raca,
+            age: a.idade,
+            gender: a.sexo,
+            description: a.descricao,
+            photos: a.fotoUrl ? [`${IMG_URL}${a.fotoUrl}`] : [],
+            available: !a.adotado
+        }));
+
+        setAnimals(formatted);
+    };
+
+    useEffect(() => {
+        fetchAnimals();
+    }, []);
+
+    /* ======================
+       FOTOS
+    ====================== */
     const handlePhotoChange = (index, file) => {
         const newPhotos = [...animalForm.photos];
         newPhotos[index] = file;
@@ -30,10 +58,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
     };
 
     const handleAddPhoto = () => {
-        setAnimalForm({
-            ...animalForm,
-            photos: [...animalForm.photos, null]
-        });
+        setAnimalForm({ ...animalForm, photos: [...animalForm.photos, null] });
     };
 
     const handleRemovePhoto = (index) => {
@@ -41,33 +66,38 @@ const AdminPanel = ({ onLogout, showToast }) => {
         if (newPhotos.length === 0) newPhotos = [null];
         setAnimalForm({ ...animalForm, photos: newPhotos });
     };
-
     //formulário
-    const handleAnimalSubmit = (e) => {
+    const handleAnimalChange = (e) => {
+        setAnimalForm({ ...animalForm, [e.target.name]: e.target.value });
+    };
+
+    const handleAnimalSubmit = async (e) => {
         e.preventDefault();
 
-        const validPhotos = animalForm.photos.filter(p => p);
+        const formData = new FormData();
 
-        const formData = {
-            ...animalForm,
-            photos: validPhotos.length > 0 ? validPhotos : [null]
-        };
+        formData.append(
+            "dados",
+            new Blob([JSON.stringify({
+                nome: animalForm.name,
+                especie: animalForm.species,
+                raca: animalForm.breed,
+                idade: Number(animalForm.age),
+                sexo: animalForm.gender,
+                descricao: animalForm.description
+            })], { type: "application/json" })
+        );
 
-        if (editingId) {
-            setAnimals(animals.map(a =>
-                a.id === editingId ? { ...a, ...formData } : a
-            ));
-            showToast('✏️', 'Pet Atualizado!', `${animalForm.name} foi atualizado com sucesso!`);
-            setEditingId(null);
-        } else {
-            const newAnimal = {
-                id: animals.length + 1,
-                ...formData,
-                available: true
-            };
-            setAnimals([...animals, newAnimal]);
-            showToast('🐾', 'Pet Cadastrado!', `${animalForm.name} foi adicionado com sucesso!`);
+        if (animalForm.photos[0] instanceof File) {
+            formData.append("foto", animalForm.photos[0]);
         }
+
+        await fetch(`${API_URL}/salvar`, {
+            method: "POST",
+            body: formData
+        });
+
+        showToast('🐾', 'Pet Cadastrado!', `${animalForm.name} foi adicionado com sucesso!`);
 
         setAnimalForm({
             name: '',
@@ -78,14 +108,13 @@ const AdminPanel = ({ onLogout, showToast }) => {
             description: '',
             photos: [null]
         });
-    };
 
-    const handleAnimalChange = (e) => {
-        setAnimalForm({ ...animalForm, [e.target.name]: e.target.value });
+        fetchAnimals();
     };
 
     const handleEdit = (id) => {
         const animal = animals.find(a => a.id === id);
+
         setAnimalForm({
             name: animal.name,
             species: animal.species,
@@ -93,8 +122,9 @@ const AdminPanel = ({ onLogout, showToast }) => {
             age: animal.age,
             gender: animal.gender,
             description: animal.description,
-            photos: animal.photos && animal.photos.length > 0 ? animal.photos : [null]
+            photos: animal.photos.length > 0 ? animal.photos : [null]
         });
+
         setEditingId(id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -112,10 +142,16 @@ const AdminPanel = ({ onLogout, showToast }) => {
         });
     };
 
-    const handleRemove = (id) => {
+    const handleRemove = async (id) => {
         const animal = animals.find(a => a.id === id);
-        setAnimals(animals.filter(a => a.id !== id));
+
+        await fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
+
         showToast('🗑️', 'Pet Removido', `${animal.name} foi removido do sistema.`);
+
+        fetchAnimals();
 
         if (editingId === id) handleCancelEdit();
     };
