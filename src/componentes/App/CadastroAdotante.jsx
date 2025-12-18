@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const RegisterSection = ({ onRegister, showToast, setCurrentSection }) => {
+const RegisterSection = ({ showToast, setCurrentSection }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -9,16 +9,51 @@ const RegisterSection = ({ onRegister, showToast, setCurrentSection }) => {
         password: ''
     });
 
-    // Handler de submit
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onRegister(formData);
-        setFormData({ name: '', email: '', phone: '', bond: '', password: '' });
-        showToast('✅', 'Cadastro Realizado!', 'Agora você pode adotar um pet incrível!');
-        setCurrentSection('home');
+
+        try {
+            const res = await fetch("http://localhost:8080/usuarios/salvar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nome: formData.name,
+                    email: formData.email,
+                    senha: formData.password,
+                    telefone: formData.phone,
+                    vinculoIFPB: formData.bond
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error();
+            }
+
+            showToast(
+                '✅',
+                'Cadastro realizado!',
+                'Agora você pode fazer login.'
+            );
+
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                bond: '',
+                password: ''
+            });
+
+            setCurrentSection('login');
+
+        } catch {
+            showToast(
+                '❌',
+                'Erro no cadastro',
+                'Não foi possível cadastrar o usuário.'
+            );
+        }
     };
 
-    // Handler de mudança de campo
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -30,94 +65,83 @@ const RegisterSection = ({ onRegister, showToast, setCurrentSection }) => {
         <section className="form-section">
             <div className="section-header">
                 <h2 className="section-title">Cadastro de Adotante</h2>
-                <p className="section-subtitle">Preencha seus dados para poder adotar um pet</p>
+                <p className="section-subtitle">
+                    Preencha seus dados para poder adotar um pet
+                </p>
             </div>
 
             <div className="form-card">
                 <div className="form-content">
                     <form onSubmit={handleSubmit}>
                         <div className="form-grid">
-                            {/* Campo Nome */}
+
                             <div className="form-group">
-                                <label htmlFor="name" className="form-label">Nome Completo</label>
+                                <label className="form-label">Nome Completo</label>
                                 <input
                                     type="text"
-                                    id="name"
                                     name="name"
                                     className="form-input"
-                                    placeholder="Seu nome completo"
                                     value={formData.name}
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
 
-                            {/* Campo Email */}
                             <div className="form-group">
-                                <label htmlFor="email" className="form-label">E-mail</label>
+                                <label className="form-label">E-mail</label>
                                 <input
                                     type="email"
-                                    id="email"
                                     name="email"
                                     className="form-input"
-                                    placeholder="seu@email.com"
                                     value={formData.email}
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
 
-                            {/* Campo Telefone */}
                             <div className="form-group">
-                                <label htmlFor="phone" className="form-label">Telefone</label>
+                                <label className="form-label">Telefone</label>
                                 <input
                                     type="tel"
-                                    id="phone"
                                     name="phone"
                                     className="form-input"
-                                    placeholder="(83) 99999-9999"
                                     value={formData.phone}
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
 
-                            {/* Campo Vínculo */}
                             <div className="form-group">
-                                <label htmlFor="bond" className="form-label">Vínculo com o IFPB</label>
+                                <label className="form-label">Vínculo com o IFPB</label>
                                 <select
-                                    id="bond"
                                     name="bond"
                                     className="form-select"
                                     value={formData.bond}
                                     onChange={handleChange}
                                     required
                                 >
-                                    <option value="">Selecione seu vínculo...</option>
-                                    <option value="Estudante"> Estudante </option>
-                                    <option value="Professor"> Professor </option>
-                                    <option value="Funcionario"> Funcionario </option>
-                                    <option value="Visitante"> Visitante </option>
+                                    <option value="">Selecione...</option>
+                                    <option value="ALUNO">Aluno</option>
+                                    <option value="PROFESSOR">Professor</option>
+                                    <option value="FUNCIONARIO">Funcionário</option>
+                                    <option value="VISITANTE">Visitante</option>
                                 </select>
                             </div>
 
-                            {/* Campo Senha */}
                             <div className="form-group">
-                                <label htmlFor="password" className="form-label">Senha</label>
+                                <label className="form-label">Senha</label>
                                 <input
                                     type="password"
-                                    id="password"
                                     name="password"
                                     className="form-input"
-                                    placeholder="Sua senha"
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
+
                         </div>
 
-                        {/* Botão Submit */}
                         <button type="submit" className="submit-btn">
                             Criar Conta ✨
                         </button>

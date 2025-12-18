@@ -5,23 +5,23 @@ import HomeSection from './App/Home';
 import AnimalsSection from '../Data/listaAnimais';
 import RegisterSection from './App/CadastroAdotante';
 
-import initialAnimals from './App/DadosIniciais'
-import { AdoptionModal, Toast } from './App/AdoptionModal'
-import AdminLogin from "../pages/Login";
+import initialAnimals from './App/DadosIniciais';
+import { AdoptionModal, Toast } from './App/AdoptionModal';
+import Login from "../pages/Login";
 import AdminPanel from "../pages/PainelAdm";
 
 const App = () => {
+
     const [currentSection, setCurrentSection] = useState('home');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [animals, setAnimals] = useState(initialAnimals);
-    const [users, setUsers] = useState([]);
     const [adoptions, setAdoptions] = useState([]);
     const [adoptionModal, setAdoptionModal] = useState({ isOpen: false, animalId: null });
     const [toast, setToast] = useState({ show: false, icon: '', title: '', message: '' });
 
-    // 🔐 CONTROLE DE LOGIN DO ADMIN
-    const [adminLogged, setAdminLogged] = useState(
-        sessionStorage.getItem("adminLogged") === "true"
+    // 🔐 LOGIN UNIFICADO
+    const [userTipo, setUserTipo] = useState(
+        sessionStorage.getItem("userTipo")
     );
 
     useEffect(() => {
@@ -37,39 +37,44 @@ const App = () => {
         }, 4000);
     };
 
-    const handleRegister = (userData) => {
-        const newUser = { id: users.length + 1, ...userData };
-        setUsers([...users, newUser]);
-    };
-
     const handleAdopt = (animalId) => {
         setAdoptionModal({ isOpen: true, animalId });
     };
 
     const confirmAdoption = () => {
-        if (adoptionModal.animalId && users.length > 0) {
-            const animal = animals.find(a => a.id === adoptionModal.animalId);
-            const user = users[users.length - 1];
+        if (!adoptionModal.animalId) return;
 
-            setAnimals(animals.map(a =>
-                a.id === adoptionModal.animalId ? { ...a, available: false } : a
-            ));
+        const animal = animals.find(a => a.id === adoptionModal.animalId);
 
-            const newAdoption = {
+        setAnimals(animals.map(a =>
+            a.id === adoptionModal.animalId
+                ? { ...a, available: false }
+                : a
+        ));
+
+        setAdoptions([
+            ...adoptions,
+            {
                 id: adoptions.length + 1,
                 animalId: adoptionModal.animalId,
-                userId: user.id,
                 date: new Date().toLocaleDateString('pt-BR')
-            };
+            }
+        ]);
 
-            setAdoptions([...adoptions, newAdoption]);
-            showToast('🎉', 'Parabéns!', `${animal.name} foi adotado com sucesso!`);
-            setAdoptionModal({ isOpen: false, animalId: null });
-        }
+        showToast('🎉', 'Parabéns!', `${animal.name} foi adotado com sucesso!`);
+        setAdoptionModal({ isOpen: false, animalId: null });
     };
+
 
     const closeAdoptionModal = () => {
         setAdoptionModal({ isOpen: false, animalId: null });
+    };
+
+    const handleLogout = () => {
+        sessionStorage.clear();
+        setUserTipo(null);
+        setCurrentSection('home');
+        showToast("👋", "Logout realizado", "Até a próxima!");
     };
 
     return (
@@ -82,10 +87,10 @@ const App = () => {
             />
 
             <main className="main-content">
+
                 {currentSection === 'home' && (
                     <HomeSection
                         animals={animals}
-                        users={users}
                         adoptions={adoptions}
                         setCurrentSection={setCurrentSection}
                     />
@@ -94,7 +99,6 @@ const App = () => {
                 {currentSection === 'animals' && (
                     <AnimalsSection
                         animals={animals}
-                        users={users}
                         onAdopt={handleAdopt}
                         showToast={showToast}
                     />
@@ -102,39 +106,39 @@ const App = () => {
 
                 {currentSection === 'register' && (
                     <RegisterSection
-                        onRegister={handleRegister}
                         showToast={showToast}
-                        setCurrentSection = {setCurrentSection}
+                        setCurrentSection={setCurrentSection}
                     />
                 )}
 
-                {/*LOGIN ADMIN */}
                 {currentSection === 'login' && (
-                    <AdminLogin
-                        onLogin={() => {
-                            setAdminLogged(true);
-                            showToast("🔐", "Login bem-sucedido!", "Bem-vindo ao painel administrativo.");
-                            setCurrentSection('admin-panel');
+                    <Login
+                        onLogin={(tipo) => {
+                            setUserTipo(tipo);
+                            sessionStorage.setItem("userTipo", tipo);
+
+                            if (tipo === "ADMIN") {
+                                showToast("🔐", "Login admin", "Bem-vindo ao painel.");
+                                setCurrentSection('admin-panel');
+                            } else {
+                                showToast("✅", "Login realizado", "Bem-vindo!");
+                                setCurrentSection('home');
+                            }
                         }}
                     />
                 )}
 
-                {/* 🛡 PAINEL ADMIN PROTEGIDO */}
-                {currentSection === 'admin-panel' && adminLogged && (
+                {currentSection === 'admin-panel' && userTipo === "ADMIN" && (
                     <AdminPanel
-                        onLogout={() => {
-                            sessionStorage.clear();
-                            setAdminLogged(false);
-                            setCurrentSection('home');
-                        }}
+                        onLogout={handleLogout}
                         showToast={showToast}
                     />
                 )}
 
-                {/*  BLOQUEIO SE TENTAR ENTRAR SEM LOGIN */}
-                {currentSection === 'admin-panel' && !adminLogged && (
+                {currentSection === 'admin-panel' && userTipo !== "ADMIN" && (
                     setCurrentSection('login')
                 )}
+
             </main>
 
             <AdoptionModal

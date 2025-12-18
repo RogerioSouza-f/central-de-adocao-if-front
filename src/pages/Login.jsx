@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import "../style/globalAdmin.css";
 
-const AdminLogin = ({ onLogin }) => {
+const Login = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({
-        email: '',
-        senha: ''
+        email: "",
+        senha: ""
     });
-    const [error, setError] = useState('');
+
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleChange = (e) => {
+        setCredentials({
+            ...credentials,
+            [e.target.name]: e.target.value
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setError("");
+        setLoading(true);
 
         try {
             const res = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(credentials)
             });
 
@@ -27,23 +35,27 @@ const AdminLogin = ({ onLogin }) => {
 
             const data = await res.json();
 
-            // sessão simples
-            sessionStorage.setItem("adminLogged", "true");
-            sessionStorage.setItem("adminEmail", data.email);
+            // 🔥 NORMALIZA A ROLE (ESSA É A CHAVE)
+            const tipo =
+                data.tipo ||
+                data.role ||
+                (data.authorities?.includes("ROLE_ADMIN") ? "ADMIN" : "USUARIO");
 
-            onLogin();
+            if (!tipo) {
+                throw new Error("Tipo de usuário não identificado");
+            }
+
+            sessionStorage.setItem("userTipo", tipo);
+            sessionStorage.setItem("userEmail", data.email);
+
+            onLogin(tipo);
 
         } catch (err) {
             setError("Email ou senha incorretos!");
-            setTimeout(() => setError(''), 3000);
+            setTimeout(() => setError(""), 3000);
+        } finally {
+            setLoading(false);
         }
-    };
-
-    const handleChange = (e) => {
-        setCredentials({
-            ...credentials,
-            [e.target.name]: e.target.value
-        });
     };
 
     return (
@@ -54,6 +66,9 @@ const AdminLogin = ({ onLogin }) => {
                 <div className="login-header">
                     <div className="login-logo">🔐</div>
                     <h2 className="login-title">Seja Bem-vindo</h2>
+                    <p className="login-subtitle">
+                        Faça login para continuar
+                    </p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -83,15 +98,17 @@ const AdminLogin = ({ onLogin }) => {
                         />
                     </div>
 
-                    <button type="submit" className="submit-btn">
-                        Login
+                    <button type="submit" className="submit-btn" disabled={loading}>
+                        {loading ? "Entrando..." : "Login"}
                     </button>
 
-                    {error && <div className="error-message">❌ {error}</div>}
+                    {error && (
+                        <div className="error-message">❌ {error}</div>
+                    )}
                 </form>
             </div>
         </div>
     );
 };
 
-export default AdminLogin;
+export default Login;
