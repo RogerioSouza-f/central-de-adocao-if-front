@@ -92,12 +92,23 @@ const AdminPanel = ({ onLogout, showToast }) => {
             formData.append("foto", animalForm.photos[0]);
         }
 
-        await fetch(`${API_URL}/salvar`, {
-            method: "POST",
+        // 🔥 AQUI ESTÁ A LÓGICA DE ATUALIZAR
+        const url = editingId
+            ? `${API_URL}/atualizar/${editingId}`
+            : `${API_URL}/salvar`;
+
+        const method = editingId ? "PUT" : "POST";
+
+        await fetch(url, {
+            method,
             body: formData
         });
 
-        showToast('🐾', 'Pet Cadastrado!', `${animalForm.name} foi adicionado com sucesso!`);
+        showToast(
+            editingId ? '✏️' : '🐾',
+            editingId ? 'Pet Atualizado!' : 'Pet Cadastrado!',
+            `${animalForm.name} ${editingId ? 'foi atualizado' : 'foi adicionado'} com sucesso!`
+        );
 
         setAnimalForm({
             name: '',
@@ -109,8 +120,10 @@ const AdminPanel = ({ onLogout, showToast }) => {
             photos: [null]
         });
 
+        setEditingId(null); // ⬅️ importante limpar edição
         fetchAnimals();
     };
+
 
     const handleEdit = (id) => {
         const animal = animals.find(a => a.id === id);
