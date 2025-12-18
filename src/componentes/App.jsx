@@ -5,18 +5,20 @@ import HomeSection from './App/Home';
 import AnimalsSection from '../Data/listaAnimais';
 import RegisterSection from './App/CadastroAdotante';
 
-import initialAnimals from './App/DadosIniciais';
 import { AdoptionModal, Toast } from './App/AdoptionModal';
 import Login from "../pages/Login";
 import AdminPanel from "../pages/PainelAdm";
 import UserProfile from "../pages/UserProfile";
+
+const API_URL = "http://localhost:8080/animais";
+const IMG_URL = "http://localhost:8080";
 
 
 const App = () => {
 
     const [currentSection, setCurrentSection] = useState('home');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [animals, setAnimals] = useState(initialAnimals);
+    const [animals, setAnimals] = useState([]);
     const [adoptions, setAdoptions] = useState([]);
     const [adoptionModal, setAdoptionModal] = useState({ isOpen: false, animalId: null });
     const [toast, setToast] = useState({ show: false, icon: '', title: '', message: '' });
@@ -31,6 +33,29 @@ const App = () => {
             import("../style/globalAdmin.css");
         }
     }, [currentSection]);
+    useEffect(() => {
+        const fetchAnimals = async () => {
+            const res = await fetch(`${API_URL}/listar`);
+            const data = await res.json();
+
+            const formatted = data.map(a => ({
+                id: a.id,
+                name: a.nome,
+                species: a.especie,
+                breed: a.raca,
+                age: a.idade,
+                gender: a.sexo,
+                description: a.descricao,
+                photos: a.fotoUrl ? [`${IMG_URL}${a.fotoUrl}`] : [],
+                available: !a.adotado
+            }));
+
+            setAnimals(formatted);
+        };
+
+        fetchAnimals();
+    }, []);
+
 
     const showToast = (icon, title, message) => {
         setToast({ show: true, icon, title, message });
