@@ -20,8 +20,10 @@ const App = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [animals, setAnimals] = useState([]);
     const [adoptions, setAdoptions] = useState([]);
+    const [loadingAnimals, setLoadingAnimals] = useState(true);
     const [adoptionModal, setAdoptionModal] = useState({ isOpen: false, animalId: null });
     const [toast, setToast] = useState({ show: false, icon: '', title: '', message: '' });
+
 
     // 🔐 LOGIN UNIFICADO
     const [userTipo, setUserTipo] = useState(
@@ -34,6 +36,15 @@ const App = () => {
         }
     }, [currentSection]);
     useEffect(() => {
+        const cached = sessionStorage.getItem("animals");
+
+        if (cached) {
+            setAnimals(JSON.parse(cached));
+            setLoadingAnimals(false);
+        }
+
+
+
         const fetchAnimals = async () => {
             const res = await fetch(`${API_URL}/listar`);
             const data = await res.json();
@@ -51,6 +62,8 @@ const App = () => {
             }));
 
             setAnimals(formatted);
+            sessionStorage.setItem("animals", JSON.stringify(formatted));
+            setLoadingAnimals(false);
         };
 
         fetchAnimals();
