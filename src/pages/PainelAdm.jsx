@@ -145,7 +145,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
     const handleRemove = async (id) => {
         const animal = animals.find(a => a.id === id);
 
-        await fetch(`${API_URL}/${id}`, {
+        await fetch(`${API_URL}/deletar/${id}`, {
             method: "DELETE"
         });
 
@@ -155,6 +155,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
 
         if (editingId === id) handleCancelEdit();
     };
+
 
     return (
         <>
