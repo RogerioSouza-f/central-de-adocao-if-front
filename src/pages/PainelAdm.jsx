@@ -44,9 +44,36 @@ const AdminPanel = ({ onLogout, showToast }) => {
         setAnimals(formatted);
     };
 
+    const fetchAdoptions = async () => {
+        const res = await fetch("http://localhost:8080/adocoes/admin");
+        const data = await res.json();
+
+        setAdoptions(data.map(a => ({
+            id: a.id,
+            date: a.dataAdocao,
+            animalId: a.animalId,
+            animalName: a.animalNome,
+            animalPhoto: a.animalFoto
+                ? `http://localhost:8080${a.animalFoto}`
+                : null,
+            userName: a.nome,
+            userEmail: a.email,
+            userPhone: a.telefone,
+            userBond: a.vinculo
+        })));
+    };
+
+
     useEffect(() => {
         fetchAnimals();
     }, []);
+
+    useEffect(() => {
+        if (activeTab === 'adoptions') {
+            fetchAdoptions();
+        }
+    }, [activeTab]);
+
 
     /* ======================
        FOTOS
@@ -92,7 +119,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
             formData.append("foto", animalForm.photos[0]);
         }
 
-        // 🔥 AQUI ESTÁ A LÓGICA DE ATUALIZAR
+        // ATUALIZAR
         const url = editingId
             ? `${API_URL}/atualizar/${editingId}`
             : `${API_URL}/salvar`;
@@ -463,17 +490,22 @@ const AdminPanel = ({ onLogout, showToast }) => {
                                     </div>
                                 ) : (
                                     adoptions.map(adoption => {
-                                        const animal = animals.find(a => a.id === adoption.animalId);
-
                                         return (
                                             <div key={adoption.id} className="admin-item">
                                                 <div className="admin-item-info">
-                                                    <div className="admin-item-emoji">
-                                                        {animal?.species === 'Cachorro' ? '🐕' : '🐱'}
-                                                    </div>
+                                                    {adoption.animalPhoto ? (
+                                                        <img
+                                                            src={adoption.animalPhoto}
+                                                            className="admin-item-photo"
+                                                            alt={adoption.animalName}
+                                                        />
+                                                    ) : (
+                                                        <div className="admin-item-emoji">🐾</div>
+                                                    )}
+
 
                                                     <div className="admin-item-details">
-                                                        <h4>🎉 {animal?.name} foi adotado!</h4>
+                                                        <h4>🎉 {adoption.animalName} foi adotado!</h4>
                                                         <p><strong>Adotante:</strong> {adoption.userName}</p>
                                                         <p><strong>E-mail:</strong> {adoption.userEmail}</p>
                                                         <p><strong>Telefone:</strong> {adoption.userPhone}</p>

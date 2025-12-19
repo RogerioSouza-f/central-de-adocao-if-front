@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { AdoptionModal } from "../componentes/App/AdoptionModal";
 
-const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
+const API_ADOCOES = "http://localhost:8080/adocoes";
+
+const AnimalsSection = ({ animals, onAdopt, showToast }) => {
     const [speciesFilter, setSpeciesFilter] = useState('');
     const [genderFilter, setGenderFilter] = useState('');
     const [selectedAnimal, setSelectedAnimal] = useState(null);
@@ -13,13 +15,52 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
         (genderFilter === '' || animal.gender === genderFilter)
     );
 
-    // Lógica de adoção
-    const handleAdopt = (animalId) => {
-        if (users.length === 0) {
-            showToast('⚠️', 'Cadastro Necessário', 'Você precisa se cadastrar primeiro para adotar um pet!');
+    // 🐾 ADOÇÃO REAL
+    const handleAdopt = async (animalId) => {
+        const userTipo = sessionStorage.getItem("userTipo");
+        const userId = sessionStorage.getItem("userId");
+
+        if (!userTipo || !userId) {
+            showToast(
+                '⚠️',
+                'Login necessário',
+                'Você precisa estar logado para adotar um pet!'
+            );
             return;
         }
-        onAdopt(animalId);
+
+        try {
+            const res = await fetch(API_ADOCOES, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    usuarioId: userId,
+                    animalId: animalId
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error("Erro ao realizar adoção");
+            }
+
+            showToast(
+                '🎉',
+                'Adoção realizada!',
+                'Parabéns! Você acabou de adotar um novo amigo 🐾'
+            );
+
+            // atualiza tela imediatamente
+            window.dispatchEvent(new Event("refreshAnimals"));
+
+        } catch (error) {
+            showToast(
+                '❌',
+                'Erro',
+                'Não foi possível realizar a adoção'
+            );
+        }
     };
 
     return (
@@ -31,7 +72,7 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                     <p className="section-subtitle">Encontre seu novo companheiro</p>
                 </div>
 
-                {/* FILTROS */}
+                {/* Filtros */}
                 <div className="filters">
                     <select
                         className="filter-select"
@@ -55,52 +96,27 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                 </div>
             </div>
 
-            {/* GRID */}
+            {/* Grid */}
             <div className="animals-grid">
                 {filteredAnimals.map(animal => (
                     <div key={animal.id} className="animal-card glass">
 
                         {/* Imagem */}
-                        <div
-                            className="animal-image"
-                            style={{
-                                width: "100%",
-                                height: "220px",
-                                overflow: "hidden",
-                                borderRadius: "0",
-                                background: "transparent"
-                            }}
-                        >
+                        <div className="animal-image">
                             {animal.photos && animal.photos.length > 0 ? (
                                 <img
                                     src={animal.photos[0]}
                                     alt={animal.name}
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                        borderRadius: "0"
-                                    }}
-                                    onError={(e) => {
-                                        e.target.style.display = "none";
-                                        e.target.parentElement.innerHTML =
-                                            `<span style="font-size: 4rem; display: flex; align-items: center; justify-content: center; height: 100%;">${
-                                                animal.species === "Cachorro" ? "🐕" : "🐱"
-                                            }</span>`;
-                                    }}
                                 />
                             ) : (
                                 <span style={{ fontSize: "4rem" }}>
-            {animal.species === "Cachorro" ? "🐕" : "🐱"}
-        </span>
+                                    {animal.species === "Cachorro" ? "🐕" : "🐱"}
+                                </span>
                             )}
                         </div>
 
-
                         <div className="animal-content">
                             <div className="animal-header">
-
-                                {/*MODAL*/}
                                 <h3
                                     className="animal-name clickable"
                                     onClick={() => setSelectedAnimal(animal)}
@@ -113,17 +129,14 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                                 </span>
                             </div>
 
-                            {/* DETALHES */}
                             <div className="animal-details">
                                 <p><strong>Espécie:</strong> {animal.species}</p>
                                 <p><strong>Raça:</strong> {animal.breed}</p>
                                 <p><strong>Idade:</strong> {animal.age}</p>
                             </div>
 
-                            {/* Descrição */}
                             <p className="animal-description">{animal.description}</p>
 
-                            {/* BOTÃO DE ADOÇÃO*/}
                             <button
                                 className="adopt-btn"
                                 onClick={() => handleAdopt(animal.id)}
@@ -135,16 +148,13 @@ const AnimalsSection = ({ animals, users, onAdopt, showToast }) => {
                 ))}
             </div>
 
-            {/* Nenhum pet */}
             {filteredAnimals.length === 0 && (
                 <div className="empty-state">
                     <div className="empty-emoji">🔍</div>
                     <p className="empty-title">Nenhum pet encontrado</p>
-                    <p className="empty-subtitle">Tente ajustar os filtros ou volte mais tarde</p>
                 </div>
             )}
 
-            {/* Modal  */}
             <AdoptionModal
                 animal={selectedAnimal}
                 onClose={() => setSelectedAnimal(null)}

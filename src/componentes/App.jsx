@@ -13,7 +13,6 @@ import UserProfile from "../pages/UserProfile";
 const API_URL = "http://localhost:8080/animais";
 const IMG_URL = "http://localhost:8080";
 
-
 const App = () => {
 
     const [currentSection, setCurrentSection] = useState('home');
@@ -24,17 +23,41 @@ const App = () => {
     const [adoptionModal, setAdoptionModal] = useState({ isOpen: false, animalId: null });
     const [toast, setToast] = useState({ show: false, icon: '', title: '', message: '' });
 
-
     // 🔐 LOGIN UNIFICADO
     const [userTipo, setUserTipo] = useState(
         sessionStorage.getItem("userTipo")
     );
 
+    // 🔄 BUSCAR ANIMAIS (AGORA GLOBAL)
+    const fetchAnimals = async () => {
+        const res = await fetch(`${API_URL}/listar`);
+        const data = await res.json();
+
+        const formatted = data.map(a => ({
+            id: a.id,
+            name: a.nome,
+            species: a.especie,
+            breed: a.raca,
+            age: a.idade,
+            gender: a.sexo,
+            description: a.descricao,
+            photos: a.fotoUrl ? [`${IMG_URL}${a.fotoUrl}`] : [],
+            available: !a.adotado
+        }));
+
+        setAnimals(formatted);
+        sessionStorage.setItem("animals", JSON.stringify(formatted));
+        setLoadingAnimals(false);
+    };
+
+    // 🎨 CSS ADMIN
     useEffect(() => {
         if (currentSection === "admin-panel") {
             import("../style/globalAdmin.css");
         }
     }, [currentSection]);
+
+    // 🚀 LOAD INICIAL + CACHE
     useEffect(() => {
         const cached = sessionStorage.getItem("animals");
 
@@ -43,32 +66,17 @@ const App = () => {
             setLoadingAnimals(false);
         }
 
-
-
-        const fetchAnimals = async () => {
-            const res = await fetch(`${API_URL}/listar`);
-            const data = await res.json();
-
-            const formatted = data.map(a => ({
-                id: a.id,
-                name: a.nome,
-                species: a.especie,
-                breed: a.raca,
-                age: a.idade,
-                gender: a.sexo,
-                description: a.descricao,
-                photos: a.fotoUrl ? [`${IMG_URL}${a.fotoUrl}`] : [],
-                available: !a.adotado
-            }));
-
-            setAnimals(formatted);
-            sessionStorage.setItem("animals", JSON.stringify(formatted));
-            setLoadingAnimals(false);
-        };
-
         fetchAnimals();
     }, []);
 
+    // ⚡ LISTENER PARA ATUALIZAR ANIMAIS EM TEMPO REAL
+    useEffect(() => {
+        const refresh = () => fetchAnimals();
+
+        window.addEventListener("refreshAnimals", refresh);
+
+        return () => window.removeEventListener("refreshAnimals", refresh);
+    }, []);
 
     const showToast = (icon, title, message) => {
         setToast({ show: true, icon, title, message });
@@ -103,8 +111,10 @@ const App = () => {
 
         showToast('🎉', 'Parabéns!', `${animal.name} foi adotado com sucesso!`);
         setAdoptionModal({ isOpen: false, animalId: null });
-    };
 
+        // 🔥 AVISA O APP PRA ATUALIZAR A LISTA
+        window.dispatchEvent(new Event("refreshAnimals"));
+    };
 
     const closeAdoptionModal = () => {
         setAdoptionModal({ isOpen: false, animalId: null });
@@ -182,7 +192,6 @@ const App = () => {
                 {sessionStorage.getItem("userTipo") && (
                     <UserProfile onLogout={handleLogout} />
                 )}
-
 
             </main>
 
