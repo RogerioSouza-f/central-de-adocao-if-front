@@ -47,6 +47,7 @@ const Login = ({ onLogin }) => {
 
             sessionStorage.setItem("userTipo", tipo);
             sessionStorage.setItem("userEmail", data.email);
+            sessionStorage.setItem("userId", data.id);
 
             onLogin(tipo);
 

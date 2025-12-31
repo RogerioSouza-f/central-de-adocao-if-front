@@ -20,7 +20,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
         age: '',
         gender: '',
         description: '',
-        photos: [null] // agora começa como arquivo vazio
+        photos: [null]
     });
 
     // Manipular fotos
@@ -66,6 +66,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
 
     useEffect(() => {
         fetchAnimals();
+        fetchAdoptions();
     }, []);
 
     useEffect(() => {

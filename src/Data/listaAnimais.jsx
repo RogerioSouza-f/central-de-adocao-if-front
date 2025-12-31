@@ -17,8 +17,14 @@ const AnimalsSection = ({ animals, onAdopt, showToast }) => {
 
     // 🐾 ADOÇÃO REAL
     const handleAdopt = async (animalId) => {
-        const userTipo = sessionStorage.getItem("userTipo");
-        const userId = sessionStorage.getItem("userId");
+        const userId =
+            sessionStorage.getItem("userId") ||
+            localStorage.getItem("userId");
+
+        const userTipo =
+            sessionStorage.getItem("userTipo") ||
+            localStorage.getItem("userTipo");
+
 
         if (!userTipo || !userId) {
             showToast(

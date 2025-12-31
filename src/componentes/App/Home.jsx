@@ -5,6 +5,7 @@ const HomeSection = ({ animals, users, adoptions, setCurrentSection }) => {
 
     const availableAnimals = animals.filter(a => a.available).length;
 
+
     return (
         <div>
 

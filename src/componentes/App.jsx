@@ -28,10 +28,11 @@ const App = () => {
         sessionStorage.getItem("userTipo")
     );
 
-    // 🔄 BUSCAR ANIMAIS (AGORA GLOBAL)
+    //  BUSCAR ANIMAIS
     const fetchAnimals = async () => {
         const res = await fetch(`${API_URL}/listar`);
         const data = await res.json();
+
 
         const formatted = data.map(a => ({
             id: a.id,
@@ -50,14 +51,19 @@ const App = () => {
         setLoadingAnimals(false);
     };
 
-    // 🎨 CSS ADMIN
+    const fetchAdoptions = async () => {
+        const res = await fetch("http://localhost:8080/adocoes/admin");
+        const data = await res.json();
+        setAdoptions(data);
+    };
+
+
     useEffect(() => {
         if (currentSection === "admin-panel") {
             import("../style/globalAdmin.css");
         }
     }, [currentSection]);
 
-    // 🚀 LOAD INICIAL + CACHE
     useEffect(() => {
         const cached = sessionStorage.getItem("animals");
 
@@ -67,9 +73,9 @@ const App = () => {
         }
 
         fetchAnimals();
+        fetchAdoptions();
     }, []);
 
-    // ⚡ LISTENER PARA ATUALIZAR ANIMAIS EM TEMPO REAL
     useEffect(() => {
         const refresh = () => fetchAnimals();
 
@@ -112,8 +118,9 @@ const App = () => {
         showToast('🎉', 'Parabéns!', `${animal.name} foi adotado com sucesso!`);
         setAdoptionModal({ isOpen: false, animalId: null });
 
-        // 🔥 AVISA O APP PRA ATUALIZAR A LISTA
+
         window.dispatchEvent(new Event("refreshAnimals"));
+        fetchAdoptions();
     };
 
     const closeAdoptionModal = () => {
