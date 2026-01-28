@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import AnimalDetailModal from "../componentes/admin/AdoptionModalAdm";
 import "../style/globalAdmin.css";
+import { authFetch } from "../services/Api";
+
 
 const API_URL = "http://localhost:8080/animais";
 const IMG_URL = "http://localhost:8080";
@@ -22,6 +24,13 @@ const AdminPanel = ({ onLogout, showToast }) => {
         description: '',
         photos: [null]
     });
+
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            onLogout();
+        }
+    }, [onLogout]);
 
     // Manipular fotos
 
@@ -45,7 +54,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
     };
 
     const fetchAdoptions = async () => {
-        const res = await fetch("http://localhost:8080/adocoes/admin");
+        const res = await authFetch("http://localhost:8080/adocoes/admin");
         const data = await res.json();
 
         setAdoptions(data.map(a => ({
@@ -76,9 +85,9 @@ const AdminPanel = ({ onLogout, showToast }) => {
     }, [activeTab]);
 
 
-    /* ======================
+    /*
        FOTOS
-    ====================== */
+   */
     const handlePhotoChange = (index, file) => {
         const newPhotos = [...animalForm.photos];
         newPhotos[index] = file;
@@ -127,10 +136,11 @@ const AdminPanel = ({ onLogout, showToast }) => {
 
         const method = editingId ? "PUT" : "POST";
 
-        await fetch(url, {
+        await authFetch(url, {
             method,
             body: formData
         });
+
 
         showToast(
             editingId ? '✏️' : '🐾',
@@ -186,9 +196,10 @@ const AdminPanel = ({ onLogout, showToast }) => {
     const handleRemove = async (id) => {
         const animal = animals.find(a => a.id === id);
 
-        await fetch(`${API_URL}/deletar/${id}`, {
+        await authFetch(`${API_URL}/deletar/${id}`, {
             method: "DELETE"
         });
+
 
         showToast('🗑️', 'Pet Removido', `${animal.name} foi removido do sistema.`);
 

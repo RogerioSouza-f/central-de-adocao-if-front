@@ -45,6 +45,7 @@ const Login = ({ onLogin }) => {
                 throw new Error("Tipo de usuário não identificado");
             }
 
+            sessionStorage.setItem("token", data.token);
             sessionStorage.setItem("userTipo", tipo);
             sessionStorage.setItem("userEmail", data.email);
             sessionStorage.setItem("userId", data.id);
