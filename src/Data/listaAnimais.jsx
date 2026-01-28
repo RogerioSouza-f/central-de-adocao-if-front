@@ -99,6 +99,16 @@ const AnimalsSection = ({ animals, onAdopt, showToast }) => {
                         <option value="Macho">♂️ Macho</option>
                         <option value="Fêmea">♀️ Fêmea</option>
                     </select>
+
+
+                    <button
+                        className="refresh-btn"
+                        onClick={() => window.dispatchEvent(new Event("refreshAnimals"))}
+                        title="Atualizar lista de pets"
+                    >
+                        ⟳
+                    </button>
+
                 </div>
             </div>
 
