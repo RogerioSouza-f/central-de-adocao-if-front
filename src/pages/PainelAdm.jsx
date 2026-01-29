@@ -48,7 +48,8 @@ const AdminPanel = ({ onLogout, showToast }) => {
             description: a.descricao,
             photos: a.fotoUrl ? [`${IMG_URL}${a.fotoUrl}`] : [],
             available: !a.adotado
-        }));
+        }))
+            .filter(animal => animal.available === true);
 
         setAnimals(formatted);
     };
@@ -125,9 +126,12 @@ const AdminPanel = ({ onLogout, showToast }) => {
             })], { type: "application/json" })
         );
 
-        if (animalForm.photos[0] instanceof File) {
-            formData.append("foto", animalForm.photos[0]);
-        }
+        // Varre o array de fotos e anexa cada arquivo ao FormData
+        animalForm.photos.forEach((photo) => {
+            if (photo instanceof File) {
+                formData.append("foto", photo);
+            }
+        });
 
         // ATUALIZAR
         const url = editingId
