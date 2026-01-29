@@ -3,10 +3,11 @@ const Navigation = ({
                         setCurrentSection,
                         mobileMenuOpen,
                         setMobileMenuOpen,
-                        userTipo,
+                        userTipo, // Pode ser 'ADMIN', 'USUARIO' ou null
                         onLogout
                     }) => {
 
+    const isLoggedIn = !!userTipo; // Verifica se existe qualquer usuário logado
     const isAdmin = userTipo === 'ADMIN';
 
     return (
@@ -36,17 +37,9 @@ const Navigation = ({
                         Pets
                     </button>
 
-                    {/* TROCA DINÂMICA AQUI */}
-                    {isAdmin ? (
-                        <>
-                            <button
-                                className={`nav-btn admin-btn ${currentSection === 'admin-panel' ? 'active' : 'inactive'}`}
-                                onClick={() => setCurrentSection('admin-panel')}
-                            >
-                                 Painel Admin
-                            </button>
-                        </>
-                    ) : (
+                    {/* Lógica de Exibição Dinâmica */}
+                    {!isLoggedIn ? (
+                        /* Se NÃO estiver logado: Mostra Cadastro e Login */
                         <>
                             <button
                                 className={`nav-btn ${currentSection === 'register' ? 'active' : 'inactive'}`}
@@ -60,6 +53,19 @@ const Navigation = ({
                             >
                                 Login
                             </button>
+                        </>
+                    ) : (
+                        /* Se ESTIVER logado (qualquer tipo): Esconde login/cadastro e mostra opções de conta */
+                        <>
+                            {isAdmin && (
+                                <button
+                                    className={`nav-btn ${currentSection === 'admin-panel' ? 'active' : 'inactive'}`}
+                                    onClick={() => setCurrentSection('admin-panel')}
+                                >
+                                    Painel Admin
+                                </button>
+                            )}
+
                         </>
                     )}
                 </div>
@@ -78,15 +84,17 @@ const Navigation = ({
                     <button className="mobile-menu-item" onClick={() => { setCurrentSection('home'); setMobileMenuOpen(false); }}>🏠 Início</button>
                     <button className="mobile-menu-item" onClick={() => { setCurrentSection('animals'); setMobileMenuOpen(false); }}>🐾 Pets</button>
 
-                    {isAdmin ? (
-                        <>
-                            <button className="mobile-menu-item" onClick={() => { setCurrentSection('admin-panel'); setMobileMenuOpen(false); }}>⚙️ Painel Admin</button>
-                            <button className="mobile-menu-item" onClick={() => { onLogout(); setMobileMenuOpen(false); }}>🚪 Sair</button>
-                        </>
-                    ) : (
+                    {!isLoggedIn ? (
                         <>
                             <button className="mobile-menu-item" onClick={() => { setCurrentSection('register'); setMobileMenuOpen(false); }}>📝 Cadastro</button>
                             <button className="mobile-menu-item" onClick={() => { setCurrentSection('login'); setMobileMenuOpen(false); }}>🔑 Login</button>
+                        </>
+                    ) : (
+                        <>
+                            {isAdmin && (
+                                <button className="mobile-menu-item" onClick={() => { setCurrentSection('admin-panel'); setMobileMenuOpen(false); }}>⚙️ Painel Admin</button>
+                            )}
+                            <button className="mobile-menu-item" onClick={() => { onLogout(); setMobileMenuOpen(false); }}>🚪 Sair</button>
                         </>
                     )}
                 </div>
@@ -94,5 +102,4 @@ const Navigation = ({
         </nav>
     );
 };
-
 export default Navigation;
