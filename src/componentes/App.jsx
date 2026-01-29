@@ -141,6 +141,8 @@ const App = () => {
                 setCurrentSection={setCurrentSection}
                 mobileMenuOpen={mobileMenuOpen}
                 setMobileMenuOpen={setMobileMenuOpen}
+                userTipo={userTipo} // Passando o tipo do usuário
+                onLogout={handleLogout} // Passando a função de logout
             />
 
             <main className="main-content">

@@ -1,12 +1,20 @@
-const Navigation = ({ currentSection, setCurrentSection, mobileMenuOpen, setMobileMenuOpen }) => {
+const Navigation = ({
+                        currentSection,
+                        setCurrentSection,
+                        mobileMenuOpen,
+                        setMobileMenuOpen,
+                        userTipo,
+                        onLogout
+                    }) => {
+
+    const isAdmin = userTipo === 'ADMIN';
+
     return (
         <nav className="nav-container glass-dark">
             <div className="nav-content">
                 {/* Logo e Marca */}
                 <div className="nav-brand">
-                    <div className="nav-logo">
-                        <span>🐾</span>
-                    </div>
+                    <div className="nav-logo"><span>🐾</span></div>
                     <div>
                         <h1 className="nav-title">PetConnect</h1>
                         <p className="nav-subtitle">IFPB Campus</p>
@@ -27,25 +35,37 @@ const Navigation = ({ currentSection, setCurrentSection, mobileMenuOpen, setMobi
                     >
                         Pets
                     </button>
-                    <button
-                        className={`nav-btn ${currentSection === 'register' ? 'active' : 'inactive'}`}
-                        onClick={() => setCurrentSection('register')}
-                    >
-                        Cadastro
-                    </button>
-                    <button
-                        className={`nav-btn ${currentSection === 'login' ? 'active' : 'inactive'}`}
-                        onClick={() => setCurrentSection('login')}
-                    >
-                        Login
-                    </button>
+
+                    {/* TROCA DINÂMICA AQUI */}
+                    {isAdmin ? (
+                        <>
+                            <button
+                                className={`nav-btn admin-btn ${currentSection === 'admin-panel' ? 'active' : 'inactive'}`}
+                                onClick={() => setCurrentSection('admin-panel')}
+                            >
+                                 Painel Admin
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button
+                                className={`nav-btn ${currentSection === 'register' ? 'active' : 'inactive'}`}
+                                onClick={() => setCurrentSection('register')}
+                            >
+                                Cadastro
+                            </button>
+                            <button
+                                className={`nav-btn ${currentSection === 'login' ? 'active' : 'inactive'}`}
+                                onClick={() => setCurrentSection('login')}
+                            >
+                                Login
+                            </button>
+                        </>
+                    )}
                 </div>
 
                 {/* Botão Menu Mobile */}
-                <button
-                    className="mobile-menu-btn"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                >
+                <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -55,33 +75,24 @@ const Navigation = ({ currentSection, setCurrentSection, mobileMenuOpen, setMobi
             {/* Menu Mobile Expandido */}
             {mobileMenuOpen && (
                 <div className="mobile-menu glass-dark">
-                    <button
-                        className="mobile-menu-item"
-                        onClick={() => { setCurrentSection('home'); setMobileMenuOpen(false); }}
-                    >
-                        🏠 Início
-                    </button>
-                    <button
-                        className="mobile-menu-item"
-                        onClick={() => { setCurrentSection('animals'); setMobileMenuOpen(false); }}
-                    >
-                        🐾 Pets
-                    </button>
-                    <button
-                        className="mobile-menu-item"
-                        onClick={() => { setCurrentSection('register'); setMobileMenuOpen(false); }}
-                    >
-                        📝 Cadastro
-                    </button>
-                    <button
-                        className="mobile-menu-item"
-                        onClick={() => { setCurrentSection('login'); setMobileMenuOpen(false); }}
-                    >
-                        🔑 Login
-                    </button>
+                    <button className="mobile-menu-item" onClick={() => { setCurrentSection('home'); setMobileMenuOpen(false); }}>🏠 Início</button>
+                    <button className="mobile-menu-item" onClick={() => { setCurrentSection('animals'); setMobileMenuOpen(false); }}>🐾 Pets</button>
+
+                    {isAdmin ? (
+                        <>
+                            <button className="mobile-menu-item" onClick={() => { setCurrentSection('admin-panel'); setMobileMenuOpen(false); }}>⚙️ Painel Admin</button>
+                            <button className="mobile-menu-item" onClick={() => { onLogout(); setMobileMenuOpen(false); }}>🚪 Sair</button>
+                        </>
+                    ) : (
+                        <>
+                            <button className="mobile-menu-item" onClick={() => { setCurrentSection('register'); setMobileMenuOpen(false); }}>📝 Cadastro</button>
+                            <button className="mobile-menu-item" onClick={() => { setCurrentSection('login'); setMobileMenuOpen(false); }}>🔑 Login</button>
+                        </>
+                    )}
                 </div>
             )}
         </nav>
     );
 };
+
 export default Navigation;
