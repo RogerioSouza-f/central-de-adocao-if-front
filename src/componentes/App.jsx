@@ -42,7 +42,7 @@ const App = () => {
             age: a.idade,
             gender: a.sexo,
             description: a.descricao,
-            photos: a.fotoUrl ? [`${IMG_URL}${a.fotoUrl}`] : [],
+            photos: a.fotoUrls ? a.fotoUrls.map(url => `http://localhost:8080${url}`) : [],
             available: !a.adotado
         }));
 
