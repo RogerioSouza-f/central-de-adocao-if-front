@@ -3,7 +3,6 @@ import AnimalDetailModal from "../componentes/admin/AdoptionModalAdm";
 import "../style/globalAdmin.css";
 import { authFetch } from "../services/Api";
 
-
 const API_URL = "http://localhost:8080/animais";
 const IMG_URL = "http://localhost:8080";
 
@@ -73,7 +72,6 @@ const AdminPanel = ({ onLogout, showToast }) => {
         })));
     };
 
-
     useEffect(() => {
         fetchAnimals();
         fetchAdoptions();
@@ -85,10 +83,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
         }
     }, [activeTab]);
 
-
-    /*
-       FOTOS
-   */
+    //FOTOS
     const handlePhotoChange = (index, file) => {
         const newPhotos = [...animalForm.photos];
         newPhotos[index] = file;
@@ -162,7 +157,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
             photos: [null]
         });
 
-        setEditingId(null); // ⬅️ importante limpar edição
+        setEditingId(null);
         fetchAnimals();
     };
 
@@ -518,7 +513,6 @@ const AdminPanel = ({ onLogout, showToast }) => {
                                                     ) : (
                                                         <div className="admin-item-emoji">🐾</div>
                                                     )}
-
 
                                                     <div className="admin-item-details">
                                                         <h4>🎉 {adoption.animalName} foi adotado!</h4>
