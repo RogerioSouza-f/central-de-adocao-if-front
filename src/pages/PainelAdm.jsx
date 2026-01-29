@@ -46,7 +46,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
             age: a.idade,
             gender: a.sexo,
             description: a.descricao,
-            photos: a.fotoUrl ? [`${IMG_URL}${a.fotoUrl}`] : [],
+            photos: a.fotoUrls ? a.fotoUrls.map(url => `${IMG_URL}${url}`) : [],
             available: !a.adotado
         }))
             .filter(animal => animal.available === true);
@@ -63,8 +63,8 @@ const AdminPanel = ({ onLogout, showToast }) => {
             date: a.dataAdocao,
             animalId: a.animalId,
             animalName: a.animalNome,
-            animalPhoto: a.animalFoto
-                ? `http://localhost:8080${a.animalFoto}`
+            animalPhoto: a.animalFotos && a.animalFotos.length > 0
+                ? `${IMG_URL}${a.animalFotos[0]}`
                 : null,
             userName: a.nome,
             userEmail: a.email,
@@ -129,7 +129,7 @@ const AdminPanel = ({ onLogout, showToast }) => {
         // Varre o array de fotos e anexa cada arquivo ao FormData
         animalForm.photos.forEach((photo) => {
             if (photo instanceof File) {
-                formData.append("foto", photo);
+                formData.append("fotos", photo);
             }
         });
 
